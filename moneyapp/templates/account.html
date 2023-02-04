@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}ข้อมูลบัญชีรายรับ - รายจ่าย{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+{% for message in messages %}
+    <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %} 
+{% endif %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <h1 class="py-2 text-center">ข้อมูลบัญชีครอบครัว</h1>
+
+    <table id="mystatement"  class="cell-border">
+        <thead>
+            <th >ชื่อรายการ</th>
+            <th >จำนวนเงิน</th>
+            <th >หมวดหมู่</th>
+            <th >ชื่อเจ้าของ</th>
+            <th>เวลาที่เพิ่มข้อมูล</th>
+        </thead>
+        <tbody>
+            {% for statement in data %}
+          <tr>
+                <td>{{statement.name}}</td>
+                <td>{{statement.amount | intcomma}}</td>
+                    {% if statement.category == 'income' %}
+                        <td>รายรับ</td>
+                    {% else %}
+                        <td>รายจ่าย</td>
+                    {% endif %}
+            <td>{{statement.manager}}</td>
+            <td>{{statement.date}}</td>
+          </tr>
+          {% endfor %}
+          
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block footer %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<script>
+$(document).ready( function () {
+    $('#mystatement').DataTable();
+} );</script>
+{% endblock %}
+

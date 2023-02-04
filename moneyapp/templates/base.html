@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <title>{% block title %}{% endblock %}</title>
+    
+</head>
+
+<style>
+  body{
+    background-image: url('https://scontent.fbkk2-8.fna.fbcdn.net/v/t1.15752-9/325470348_6155020161184837_6696334379348116818_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=ae9488&_nc_eui2=AeGwLelVg5852UajEkBrCcv1yzX5bQzsr7TLNfltDOyvtH6e3M2R1k6u_LjWGoNrLTVMERp05focVTSgSp8YqTBt&_nc_ohc=ExydYDu4CxkAX_T9nC0&tn=1MKYNojzT0o3zXB5&_nc_ht=scontent.fbkk2-8.fna&oh=03_AdTqDaWPUT4F3Elw6xyIKc5CsfTN4mInQtkIX1Ux8fcH5g&oe=63F1FF86');
+    background-size: 100% 150%;
+    background-attachment: fixed;
+    /* background-color: rgba(205, 243, 225, 0.681) */
+  }
+  nav{
+    background-color: rgba(34, 209, 128, 0.681);
+  }
+  p{
+    color: #000;
+  }
+  .t{
+    background-color: rgb(106, 197, 176);
+  }
+ 
+</style>
+<body>
+  <nav class="navbar navbar-expand-sm bg-Success navbar-Success">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">หน้าแรก</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/account">account</a>
+          </li>
+         
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/forninput">เพื่มข้อมูล</a>
+          </li>
+        </ul>
+     
+        <ul class="navbar-nav ms-auto ">
+          {% if request.user.is_authenticated %}
+            <p class="my-2">สวัสดี : {{request.user.first_name}} {{request.user.last_name}}</p>
+                {% if request.user.is_superuser %}
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="/admin">จัดการบัญชี</a>
+                </li>
+                {% else %}
+                {% endif %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/logout">ออกจากระบบ</a>
+            </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/register">สร้างบัญชีผู้ใช้</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/login">ล๊อกอินเข้าสู่ระบบ</a>
+          </li>
+
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+   </div>
+   {% block footer %}
+   {% endblock %}
+   
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

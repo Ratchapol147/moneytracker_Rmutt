@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}ภาพรวมบัญชีของเรา{% endblock %}
+
+{% block content %}
+{% if request.user.is_authenticated %}
+    <h1 class="py-2 text-center">ภาพรวมบัญชีของเรา</h1>
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+            {{message}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %} 
+    {% endif %}
+    
+            <h5>รายได้รวมทั้งหมด  :{{total_income.amount__sum| intcomma}} บาท</h5><br>
+            <h5>รายจ่ายรวมทั้งหมด :{{total_expense.amount__sum | intcomma}} บาท</h5><br>
+            <h5>เหลือทั้งหมด : {{total| intcomma}} บาท</h5>
+
+          <div>
+            <canvas id="myReport" height="8px" width="20px"></canvas>
+        </div>
+        <table class="table table-info">
+          
+          <thead>
+            <tr>
+              <th scope="col">name</th>
+              <th scope="col">category</th>
+              <th scope="col">amount</th>
+              <th scope="col">รูปภาพ</th>
+              <th scope="col">ลบ</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            {% for statement in data %}
+            <tr>
+                  <td>{{statement.name}}</td>
+                  <td>{{statement.amount | intcomma}}</td>
+                      {% if statement.category == 'income' %}
+                          <td>รายรับ</td>
+                      {% else %}
+                          <td>รายจ่าย</td>
+                      {% endif %}
+                      {% if statement.cover.url == '/media/nopic' %}
+                      <td><a href="{{statement.cover.url}}" class="btn btn-primary disabled">ดูรูป</a></td>
+                      {% else %}
+                      <td><a href="{{statement.cover.url}}" class="btn btn-primary">ดูรูป</a></td>
+                      {% endif %}                    
+                    <td><a href="{% url 'delete' statement.id %}" class="btn btn-danger">ลบ</a></td>
+            </tr>
+            {% endfor %}
+            
+          </tbody>
+        </table>
+
+
+{% else %}
+<h1 class="text-center my-5">กรุณาเข้าสู่ระบบ</h1>
+<div class="d-grid gap-2">
+<a href="/login" class="btn btn-warning btn-lg">กดปุ่มนี้</a>
+</div>
+{% endif %}
+
+<style>
+  g{
+    background-color: rgb(224, 208, 86);
+  }
+</style>
+
+
+{% endblock %}
+
+{% block footer %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('myReport');
+  
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['รายรับ', 'รายจ่าย','เหลือทั้งหมด'],
+        datasets: [{
+          label: 'เหลือเงิน',
+          data: ["{{total_income.amount__sum}}","{{total_expense.amount__sum}}","{{total}}"],
+          borderWidth: 1,
+          // borderColor: 'rgb(30, 30, 30)',
+          backgroundColor :['rgb(50, 196, 101)','red','rgb(224, 208, 86)']
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
+{% endblock %}
